@@ -8,9 +8,23 @@ This this closely following the book `Writing an interpreter in Go` by Thorsten 
 Inside the project, you'll see the following folders and files:
 
 ```
-/
-├── interpreter/
-└── package.json
+.
+├── interpreter
+│  ├── jest.config.js
+│  ├── package.json
+│  ├── src
+│  │  ├── ast.ts
+│  │  ├── jest.d.ts
+│  │  ├── lexer.test.ts
+│  │  ├── lexer.ts
+│  │  ├── parser.test.ts
+│  │  ├── parser.ts
+│  │  ├── repl.ts
+│  │  ├── token.ts
+│  │  └── utils.ts
+│  └── tsconfig.json
+├── package.json
+└── README.md
 ```
 
 ## 🧞 Commands
