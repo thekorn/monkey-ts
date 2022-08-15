@@ -1,5 +1,6 @@
 import Token from './token'
 import * as Tokens from './token'
+import { rangeIncludes, locations } from './utils'
 
 function isLetter(ch?: string | null): boolean {
   if (!ch) return false
@@ -11,24 +12,9 @@ function isDigit(ch?: string | null): boolean {
   return '0' <= ch && ch <= '9'
 }
 
-function locations(str: string, char: string): number[] {
-  const indices: number[] = []
-  for(let i = 0; i < str.length; i++) {
-    if (str[i] === char) indices.push(i)
-  }
-  return indices
-}
-
-function rangeIncludes(value: number, sortedNumberArray: number[]): [number, number, number] {
-  let idx = 0
-  while (sortedNumberArray[idx] < value) idx++
-  return [idx, sortedNumberArray[idx - 1] + 1, sortedNumberArray[idx]]
-}
-
 export class Lexer {
   #input: string
 
-  //@ts-ignore
   #position: number = 0
   #readPosition: number = 0
   #ch: string | null
