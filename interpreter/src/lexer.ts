@@ -34,6 +34,14 @@ export class Lexer {
     this.#position = this.#readPosition
     this.#readPosition += 1
   }
+  
+  #peekChar(): string | null {
+    if (this.#readPosition >= this.#input.length) {
+      return null
+    } else {
+      return this.#input.charAt(this.#readPosition)
+    }
+  }
 
   #readIdentifier(): string {
     const position: number = this.#position
@@ -81,7 +89,14 @@ export class Lexer {
     this.#skipWhitespace()
     switch (this.#ch) {
       case '=':
-        tok = new Token(Tokens.ASSIGN, this.#ch)
+        if (this.#peekChar() == '=') {
+          const ch = this.#ch
+          this.#readChar()
+          const literal = `${ch}${this.#ch}`
+          tok = new Token(Tokens.EQ, literal)
+        } else {
+          tok = new Token(Tokens.ASSIGN, this.#ch)
+        }
         break
       case '+':
         tok = new Token(Tokens.PLUS, this.#ch)
@@ -90,7 +105,14 @@ export class Lexer {
         tok = new Token(Tokens.MINUS, this.#ch)
         break
       case '!':
-        tok = new Token(Tokens.BANG, this.#ch)
+        if (this.#peekChar() == '=') {
+          const ch = this.#ch
+          this.#readChar()
+          const literal = `${ch}${this.#ch}`
+          tok = new Token(Tokens.NOT_EQ, literal)
+        } else {
+          tok = new Token(Tokens.BANG, this.#ch)
+        }
         break
       case '/':
         tok = new Token(Tokens.SLASH, this.#ch)
@@ -131,9 +153,9 @@ export class Lexer {
       default:
         if (isLetter(this.#ch)) {
           const literal = this.#readIdentifier()
-          return new Token(Tokens.lookupIdent(literal), literal)
+          return new Token(Tokens.lookupIdent(literal), literal) // we need to early exit here as we already advanced the position
         } else if (isDigit(this.#ch)) {
-          return new Token(Tokens.INT, this.#readNumber())
+          return new Token(Tokens.INT, this.#readNumber())  // we need to early exit here as we already advanced the position
         } else {
           tok = new Token(Tokens.ILLEGAL, this.#ch)
         }

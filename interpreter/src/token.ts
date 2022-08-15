@@ -25,8 +25,11 @@ export const BANG: TokenType = '!'
 export const ASTERISK: TokenType = '*'
 export const SLASH: TokenType = '/'
 
-export const LT = '<'
-export const GT = '>'
+export const LT: TokenType = '<'
+export const GT: TokenType = '>'
+
+export const EQ: TokenType = '=='
+export const NOT_EQ: TokenType = '!='
 
 // delimiters
 export const COMMA: TokenType = ','

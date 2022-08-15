@@ -196,6 +196,33 @@ describe('test operators', () => {
       expect(token).toBeTokenAtPosition(expectedToken, i)
     }
   })
+
+  test('test equal and unequal', () => {
+    const input = `
+      10 == 10;
+      10 != 9;
+    `
+  
+    const expectedResult: TestToken[] = [
+      { expectedType: TOKEN.INT, expectedLiteral: '10' },
+      { expectedType: TOKEN.EQ, expectedLiteral: '==' },
+      { expectedType: TOKEN.INT, expectedLiteral: '10' },
+      { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+      { expectedType: TOKEN.INT, expectedLiteral: '10' },
+      { expectedType: TOKEN.NOT_EQ, expectedLiteral: '!=' },
+      { expectedType: TOKEN.INT, expectedLiteral: '9' },
+      { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+      { expectedType: TOKEN.EOF, expectedLiteral: '' }
+    ]
+  
+    const lexer = new Lexer(input)
+  
+    for (let i = 0; i < expectedResult.length; i++) {
+      const token = lexer.nextToken()
+      const expectedToken = expectedResult[i];
+      expect(token).toBeTokenAtPosition(expectedToken, i)
+    }
+  })
 })
 
 test('test more keywords', () => {
