@@ -41,9 +41,20 @@ export const RBRACE: TokenType = '}'
 export const FUNCTION: TokenType = 'FUNCTION'
 export const LET: TokenType = 'LET'
 
+export const TRUE: TokenType = 'TRUE'
+export const FALSE: TokenType = 'FALSE'
+export const IF: TokenType = 'IF'
+export const ELSE: TokenType = 'ELSE'
+export const RETURN: TokenType = 'RETURN'
+
 const keywords = new Map<string, TokenType>([
   ['fn', FUNCTION],
-  ['let', LET]
+  ['let', LET],
+  ['true', TRUE],
+  ['false', FALSE],
+  ['if', IF],
+  ['else', ELSE],
+  ['return', RETURN]
 ])
 
 export function lookupIdent(ident: string): TokenType {

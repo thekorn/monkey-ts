@@ -193,3 +193,42 @@ test('test even more complex', () => {
     expect(token).toBeTokenAtPosition(expectedToken, i)
   }
 })
+
+test('test more keywords', () => {
+  const input = `
+  if (5 < 10) {
+    return true;
+  } else {
+    return false;
+  }
+  `
+
+  const expectedResult: TestToken[] = [
+    { expectedType: TOKEN.IF, expectedLiteral: 'if' },
+    { expectedType: TOKEN.LPAREN, expectedLiteral: '(' },
+    { expectedType: TOKEN.INT, expectedLiteral: '5' },
+    { expectedType: TOKEN.LT, expectedLiteral: '<' },
+    { expectedType: TOKEN.INT, expectedLiteral: '10' },
+    { expectedType: TOKEN.RPAREN, expectedLiteral: ')' },
+    { expectedType: TOKEN.LBRACE, expectedLiteral: '{' },
+    { expectedType: TOKEN.RETURN, expectedLiteral: 'return' },
+    { expectedType: TOKEN.TRUE, expectedLiteral: 'true' },
+    { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+    { expectedType: TOKEN.RBRACE, expectedLiteral: '}' },
+    { expectedType: TOKEN.ELSE, expectedLiteral: 'else' },
+    { expectedType: TOKEN.LBRACE, expectedLiteral: '{' },
+    { expectedType: TOKEN.RETURN, expectedLiteral: 'return' },
+    { expectedType: TOKEN.FALSE, expectedLiteral: 'false' },
+    { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+    { expectedType: TOKEN.RBRACE, expectedLiteral: '}' },
+    { expectedType: TOKEN.EOF, expectedLiteral: '' }
+  ]
+
+  const lexer = new Lexer(input)
+
+  for (let i = 0; i < expectedResult.length; i++) {
+    const token = lexer.nextToken()
+    const expectedToken = expectedResult[i];
+    expect(token).toBeTokenAtPosition(expectedToken, i)
+  }
+})
