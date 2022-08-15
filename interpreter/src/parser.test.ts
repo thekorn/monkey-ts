@@ -61,3 +61,23 @@ test('test let statement', () => {
     expect(stmt).toBeLetStatementWithIdentifier(expectedResult[i])
   }
 })
+
+test('test let statement errors', () => {
+  const input = `
+    let x 5;
+    let = 10;
+    let 838383;
+  `
+
+  const lexer = new Lexer(input)
+  const parser = new Parser(lexer)
+
+  const program = parser.parseProgram()
+  expect(program).not.toBe(null)
+  expect(parser.errors.length).toBe(3)
+
+  expect(parser.errors[0]).toBe('expected next token to be =, got INT')
+  expect(parser.errors[1]).toBe('expected next token to be IDENT, got =')
+  expect(parser.errors[2]).toBe('expected next token to be IDENT, got INT')
+  
+})

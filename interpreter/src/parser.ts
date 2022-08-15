@@ -8,9 +8,11 @@ export class Parser {
   //@ts-ignore
   #curToken?: Token
   #peekToken?: Token
+  #errors: string[]
 
   constructor(l: Lexer) {
     this.#l = l
+    this.#errors = []
     // read tow tokens, to get curToken and peekToken both set
     this.#nextToken()
     this.#nextToken()
@@ -43,8 +45,14 @@ export class Parser {
       this.#nextToken()
       return true
     } else {
+      this.#peekError(t)
       return false
     }
+  }
+
+  //@ts-ignore
+  #peekError(t: TokenType) {
+    this.#errors.push(`expected next token to be ${t}, got ${this.#peekToken?.type}`)
   }
 
   #parseLetStatement(): LetStatement | null {
@@ -74,5 +82,9 @@ export class Parser {
       this.#nextToken()
     }
     return new Program(statements)
+  }
+
+  get errors(): string[] {
+    return this.#errors
   }
 }
