@@ -5,7 +5,6 @@ import Token, { ASSIGN, EOF, IDENT, LET, SEMICOLON, TokenType } from './token'
 
 export class Parser {
   #l: Lexer
-  //@ts-ignore
   #curToken?: Token
   #peekToken?: Token
   #errors: string[]
@@ -50,7 +49,6 @@ export class Parser {
     }
   }
 
-  //@ts-ignore
   #peekError(t: TokenType) {
     this.#errors.push(`expected next token to be ${t}, got ${this.#peekToken?.type}`)
   }
