@@ -129,8 +129,6 @@ test('test digit', () => {
     const expectedToken = expectedResult[i];
     expect(token).toBeTokenAtPosition(expectedToken, i)
   }
-
-
 })
 
 
@@ -150,6 +148,48 @@ test('test ident', () => {
     const expectedToken = expectedResult[i];
     expect(token).toBeTokenAtPosition(expectedToken, i)
   }
+})
 
+test('test more complex', () => {
+  const input = `!-/*5;`
 
+  const expectedResult: TestToken[] = [
+    { expectedType: TOKEN.BANG, expectedLiteral: '!' },
+    { expectedType: TOKEN.MINUS, expectedLiteral: '-' },
+    { expectedType: TOKEN.SLASH, expectedLiteral: '/' },
+    { expectedType: TOKEN.ASTERISK, expectedLiteral: '*' },
+    { expectedType: TOKEN.INT, expectedLiteral: '5' },
+    { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+    { expectedType: TOKEN.EOF, expectedLiteral: '' }
+  ]
+
+  const lexer = new Lexer(input)
+
+  for (let i = 0; i < expectedResult.length; i++) {
+    const token = lexer.nextToken()
+    const expectedToken = expectedResult[i];
+    expect(token).toBeTokenAtPosition(expectedToken, i)
+  }
+})
+
+test('test even more complex', () => {
+  const input = `5 < 10 > 5;`
+
+  const expectedResult: TestToken[] = [
+    { expectedType: TOKEN.INT, expectedLiteral: '5' },
+    { expectedType: TOKEN.LT, expectedLiteral: '<' },
+    { expectedType: TOKEN.INT, expectedLiteral: '10' },
+    { expectedType: TOKEN.GT, expectedLiteral: '>' },
+    { expectedType: TOKEN.INT, expectedLiteral: '5' },
+    { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+    { expectedType: TOKEN.EOF, expectedLiteral: '' }
+  ]
+
+  const lexer = new Lexer(input)
+
+  for (let i = 0; i < expectedResult.length; i++) {
+    const token = lexer.nextToken()
+    const expectedToken = expectedResult[i];
+    expect(token).toBeTokenAtPosition(expectedToken, i)
+  }
 })

@@ -64,6 +64,27 @@ export class Lexer {
       case '=':
         tok = new Token(Tokens.ASSIGN, this.#ch)
         break
+      case '+':
+        tok = new Token(Tokens.PLUS, this.#ch)
+        break
+      case '-':
+        tok = new Token(Tokens.MINUS, this.#ch)
+        break
+      case '!':
+        tok = new Token(Tokens.BANG, this.#ch)
+        break
+      case '/':
+        tok = new Token(Tokens.SLASH, this.#ch)
+        break
+      case '*':
+        tok = new Token(Tokens.ASTERISK, this.#ch)
+        break
+      case '<':
+        tok = new Token(Tokens.LT, this.#ch)
+        break
+      case '>':
+        tok = new Token(Tokens.GT, this.#ch)
+        break
       case ';':
         tok = new Token(Tokens.SEMICOLON, this.#ch)
         break

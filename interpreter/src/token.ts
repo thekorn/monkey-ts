@@ -20,6 +20,13 @@ export const INT: TokenType = 'INT' // 123456
 // Operators
 export const ASSIGN: TokenType = "="
 export const PLUS: TokenType = '+'
+export const MINUS: TokenType = '-'
+export const BANG: TokenType = '!'
+export const ASTERISK: TokenType = '*'
+export const SLASH: TokenType = '/'
+
+export const LT = '<'
+export const GT = '>'
 
 // delimiters
 export const COMMA: TokenType = ','
