@@ -11,6 +11,20 @@ function isDigit(ch?: string | null): boolean {
   return '0' <= ch && ch <= '9'
 }
 
+function locations(str: string, char: string): number[] {
+  const indices: number[] = []
+  for(let i = 0; i < str.length; i++) {
+    if (str[i] === char) indices.push(i)
+  }
+  return indices
+}
+
+function rangeIncludes(value: number, sortedNumberArray: number[]): [number, number, number] {
+  let idx = 0
+  while (sortedNumberArray[idx] < value) idx++
+  return [idx, sortedNumberArray[idx - 1] + 1, sortedNumberArray[idx]]
+}
+
 export class Lexer {
   #input: string
 
@@ -55,6 +69,25 @@ export class Lexer {
     while (this.#ch && ' \t\n\r'.includes(this.#ch)) {
       this.#readChar()
     }
+  }
+
+  getCurrentState(): string {
+    const allLineBreaks = locations(this.#input, '\n')
+    let currentLine: string
+    let relPos: number
+    let prefix: string = ''
+    if (allLineBreaks.length === 0) {
+      prefix = 'line 0: '
+      currentLine = this.#input
+      relPos = this.#position + prefix.length
+    } else {
+      allLineBreaks.push(this.#input.length)
+      const [lineCnt, start, end] = rangeIncludes(this.#position, allLineBreaks)
+      prefix = `line ${lineCnt}: `
+      relPos = this.#position - start + prefix.length
+      currentLine = this.#input.slice(start, end)
+    }
+    return `${prefix}${currentLine}\n${' '.repeat(relPos - 1)}^`
   }
 
   nextToken(): Token {

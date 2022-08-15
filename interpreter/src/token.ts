@@ -13,7 +13,7 @@ export default class Token {
 export const ILLEGAL: TokenType = 'ILLEGAL'
 export const EOF: TokenType = 'EOF'
 
-// identifiers and literla
+// identifiers and literal
 export const IDENT: TokenType = 'IDENT' // add, foobar, x, y
 export const INT: TokenType = 'INT' // 123456
 

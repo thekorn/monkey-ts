@@ -8,7 +8,7 @@ interface TestToken {
 }
 
 expect.extend({
-  toBeTokenAtPosition(token: Token, expectedToken: TestToken, pos: number) {
+  toBeTokenAtPosition(token: Token, expectedToken: TestToken, pos: number, lexer?: Lexer) {
     const pass = token.literal === expectedToken.expectedLiteral && token.type === expectedToken.expectedType
 
     if (pass) {
@@ -17,9 +17,10 @@ expect.extend({
         message: () => `expected token to be an expected token`  //TODO better message
       }
     } else {
+      const lexerState = lexer ? `\nCurrent Lexer state:\n${lexer.getCurrentState()}` : ''
       return {
         pass: false,
-        message: () => `expected token at position ${pos} to be ${JSON.stringify(expectedToken)}, got ${JSON.stringify(token)}`
+        message: () => `expected token at position ${pos} to be ${JSON.stringify(expectedToken)}, got ${JSON.stringify(token)}${lexerState}`
       }
     }
 
@@ -112,86 +113,89 @@ test('test complex source code', () => {
 
 })
 
-
-test('test digit', () => {
-  const input = `7;`
-
-  const expectedResult: TestToken[] = [
-    { expectedType: TOKEN.INT, expectedLiteral: '7' },
-    { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
-    { expectedType: TOKEN.EOF, expectedLiteral: '' }
-  ]
-
-  const lexer = new Lexer(input)
-
-  for (let i = 0; i < expectedResult.length; i++) {
-    const token = lexer.nextToken()
-    const expectedToken = expectedResult[i];
-    expect(token).toBeTokenAtPosition(expectedToken, i)
-  }
+describe('test digit and ident', () => {
+  test('test digit', () => {
+    const input = `7;`
+  
+    const expectedResult: TestToken[] = [
+      { expectedType: TOKEN.INT, expectedLiteral: '7' },
+      { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+      { expectedType: TOKEN.EOF, expectedLiteral: '' }
+    ]
+  
+    const lexer = new Lexer(input)
+  
+    for (let i = 0; i < expectedResult.length; i++) {
+      const token = lexer.nextToken()
+      const expectedToken = expectedResult[i];
+      expect(token).toBeTokenAtPosition(expectedToken, i)
+    }
+  })
+  
+  
+  test('test ident', () => {
+    const input = `boo;`
+  
+    const expectedResult: TestToken[] = [
+      { expectedType: TOKEN.IDENT, expectedLiteral: 'boo' },
+      { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+      { expectedType: TOKEN.EOF, expectedLiteral: '' }
+    ]
+  
+    const lexer = new Lexer(input)
+  
+    for (let i = 0; i < expectedResult.length; i++) {
+      const token = lexer.nextToken()
+      const expectedToken = expectedResult[i];
+      expect(token).toBeTokenAtPosition(expectedToken, i)
+    }
+  })
 })
 
-
-test('test ident', () => {
-  const input = `boo;`
-
-  const expectedResult: TestToken[] = [
-    { expectedType: TOKEN.IDENT, expectedLiteral: 'boo' },
-    { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
-    { expectedType: TOKEN.EOF, expectedLiteral: '' }
-  ]
-
-  const lexer = new Lexer(input)
-
-  for (let i = 0; i < expectedResult.length; i++) {
-    const token = lexer.nextToken()
-    const expectedToken = expectedResult[i];
-    expect(token).toBeTokenAtPosition(expectedToken, i)
-  }
-})
-
-test('test more complex', () => {
-  const input = `!-/*5;`
-
-  const expectedResult: TestToken[] = [
-    { expectedType: TOKEN.BANG, expectedLiteral: '!' },
-    { expectedType: TOKEN.MINUS, expectedLiteral: '-' },
-    { expectedType: TOKEN.SLASH, expectedLiteral: '/' },
-    { expectedType: TOKEN.ASTERISK, expectedLiteral: '*' },
-    { expectedType: TOKEN.INT, expectedLiteral: '5' },
-    { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
-    { expectedType: TOKEN.EOF, expectedLiteral: '' }
-  ]
-
-  const lexer = new Lexer(input)
-
-  for (let i = 0; i < expectedResult.length; i++) {
-    const token = lexer.nextToken()
-    const expectedToken = expectedResult[i];
-    expect(token).toBeTokenAtPosition(expectedToken, i)
-  }
-})
-
-test('test even more complex', () => {
-  const input = `5 < 10 > 5;`
-
-  const expectedResult: TestToken[] = [
-    { expectedType: TOKEN.INT, expectedLiteral: '5' },
-    { expectedType: TOKEN.LT, expectedLiteral: '<' },
-    { expectedType: TOKEN.INT, expectedLiteral: '10' },
-    { expectedType: TOKEN.GT, expectedLiteral: '>' },
-    { expectedType: TOKEN.INT, expectedLiteral: '5' },
-    { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
-    { expectedType: TOKEN.EOF, expectedLiteral: '' }
-  ]
-
-  const lexer = new Lexer(input)
-
-  for (let i = 0; i < expectedResult.length; i++) {
-    const token = lexer.nextToken()
-    const expectedToken = expectedResult[i];
-    expect(token).toBeTokenAtPosition(expectedToken, i)
-  }
+describe('test operators', () => {
+  test('test more complex', () => {
+    const input = `!-/*5;`
+  
+    const expectedResult: TestToken[] = [
+      { expectedType: TOKEN.BANG, expectedLiteral: '!' },
+      { expectedType: TOKEN.MINUS, expectedLiteral: '-' },
+      { expectedType: TOKEN.SLASH, expectedLiteral: '/' },
+      { expectedType: TOKEN.ASTERISK, expectedLiteral: '*' },
+      { expectedType: TOKEN.INT, expectedLiteral: '5' },
+      { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+      { expectedType: TOKEN.EOF, expectedLiteral: '' }
+    ]
+  
+    const lexer = new Lexer(input)
+  
+    for (let i = 0; i < expectedResult.length; i++) {
+      const token = lexer.nextToken()
+      const expectedToken = expectedResult[i];
+      expect(token).toBeTokenAtPosition(expectedToken, i)
+    }
+  })
+  
+  test('test even more complex', () => {
+    const input = `5 < 10 > 5;`
+  
+    const expectedResult: TestToken[] = [
+      { expectedType: TOKEN.INT, expectedLiteral: '5' },
+      { expectedType: TOKEN.LT, expectedLiteral: '<' },
+      { expectedType: TOKEN.INT, expectedLiteral: '10' },
+      { expectedType: TOKEN.GT, expectedLiteral: '>' },
+      { expectedType: TOKEN.INT, expectedLiteral: '5' },
+      { expectedType: TOKEN.SEMICOLON, expectedLiteral: ';' },
+      { expectedType: TOKEN.EOF, expectedLiteral: '' }
+    ]
+  
+    const lexer = new Lexer(input)
+  
+    for (let i = 0; i < expectedResult.length; i++) {
+      const token = lexer.nextToken()
+      const expectedToken = expectedResult[i];
+      expect(token).toBeTokenAtPosition(expectedToken, i)
+    }
+  })
 })
 
 test('test more keywords', () => {
@@ -229,6 +233,29 @@ test('test more keywords', () => {
   for (let i = 0; i < expectedResult.length; i++) {
     const token = lexer.nextToken()
     const expectedToken = expectedResult[i];
-    expect(token).toBeTokenAtPosition(expectedToken, i)
+    expect(token).toBeTokenAtPosition(expectedToken, i, lexer)
   }
+})
+
+describe('test lexer state', () => {
+  test('simple current state', () => {
+    const lexer = new Lexer('1 + 1;')
+    lexer.nextToken()
+    lexer.nextToken()
+    expect(lexer.getCurrentState()).toBe('line 0: 1 + 1;\n          ^')
+    
+  })
+  
+  test('current state in 2nd line', () => {
+    const lexer = new Lexer('1 + 1;\n7 = 9;')
+    lexer.nextToken()
+    lexer.nextToken()
+    lexer.nextToken()
+    lexer.nextToken()
+    lexer.nextToken()
+    lexer.nextToken()
+    lexer.nextToken()
+    expect(lexer.getCurrentState()).toBe('line 1: 7 = 9;\n            ^')
+    
+  })
 })
