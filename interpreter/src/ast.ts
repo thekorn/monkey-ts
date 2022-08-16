@@ -62,3 +62,21 @@ export class Identifier extends Expression {
   }
 
 }
+
+export class ReturnStatement extends Statement {
+  readonly token: Token
+  readonly returnValue?: Expression
+
+  constructor(token: Token, returnValue?: Expression) {
+    super()
+    this.token = token
+    this.returnValue = returnValue
+  }
+
+  statementNode(): void {}
+
+  tokenLiteral(): string {
+      return this.token.literal
+  }
+
+}

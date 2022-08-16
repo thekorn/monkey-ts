@@ -81,3 +81,23 @@ test('test let statement errors', () => {
   expect(parser.errors[2]).toBe('expected next token to be IDENT, got INT')
   
 })
+
+test('test return statement', () => {
+  const input = `
+    return 5;
+    return 10;
+    return 993322;
+  `
+
+  const lexer = new Lexer(input)
+  const parser = new Parser(lexer)
+
+  const program = parser.parseProgram()
+  expect(program).not.toBe(null)
+  expect(program!.statements.length).toBe(3)
+
+  for (let i = 0; i < program!.statements.length; i++) {
+    const stmt = program?.statements[i]
+    expect(stmt.tokenLiteral()).toBe('return')
+  }
+})
